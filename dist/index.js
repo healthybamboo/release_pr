@@ -192,11 +192,9 @@ async function run() {
             head: branchName,
             base: "main", // 変更する場合は適宜変更
             body: `Release ${version}`,
-            draft: false,
             reviewers: [
                 github.context.repo.owner,
             ],
-            maintainer_can_modify: true,
         });
         core.info(`Created pull request: ${pullRequest.html_url}`);
         core.setOutput("pull_request_url", pullRequest.html_url);
