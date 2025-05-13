@@ -144,12 +144,14 @@ async function run() {
     if (dot_version_file_path) {
       core.info(`Updating version in ${dot_version_file_path}`);
       updateVersionFile(dot_version_file_path, version);
+      await exec.exec("git", ["add", dot_version_file_path]);
     }
     // build.gradleファイルのバージョンを更新
     if (build_gradle_file_paths && build_gradle_file_paths.length > 0) {
       for (const filePath of build_gradle_file_paths) {
         core.info(`Updating version in ${filePath}`);
         updateGradleVersion(filePath, version);
+        await exec.exec("git", ["add", filePath]);
       }
     }
 
@@ -158,11 +160,11 @@ async function run() {
       for (const filePath of package_json_file_paths) {
         core.info(`Updating version in ${filePath}`);
         updatePackageJsonVersion(filePath, version);
+        await exec.exec("git", ["add", filePath]);
       }
     }
 
     // 変更を全てコミット
-    await exec.exec("git", ["add", "."]);
     await exec.exec("git", ["commit", "-m", `Release ${version}`]);
     await exec.exec("git", ["push", "origin", branchName]);
     core.info(`Pushed branch ${branchName} to origin`);
