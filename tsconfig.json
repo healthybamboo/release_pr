@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "ES2020",
+    ],
+    "target": "ES2020", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "CommonJS", /* Specify what module code is generated. */
+    "moduleResolution": "node", /* Specify how TypeScript looks up a file from a given module specifier. */
+    "moduleDetection": "auto",
+    "baseUrl": ".", /* Specify the base directory to resolve non-relative module names. */
+    "strict": true, /* Specify a set of entries that re-map imports to additional lookup locations. */
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+  },
+  "include": [
+    "*.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts"
+  ]
+}

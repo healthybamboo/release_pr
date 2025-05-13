@@ -1,0 +1,30 @@
+name: Create Release Pull Request
+description: リリース用のPull Requestを作成します。
+inputs:
+  github_token:
+    description: "GitHubのトークンを指定します。"
+    required: true
+  dot_version_file_path:
+    description: ".versionファイルのパスを指定します。"
+    required: false
+    default: ".version"
+  build_gradle_file_paths:
+    description: "build.gradleファイルのパスを指定します。"
+    required: false
+  package_json_file_paths:
+    description: "package.jsonファイルのパスを指定します。"
+    required: false
+  release_version:
+    description: "明示的にリリースバージョンを指定します。"
+    required: false
+  release_type:
+    description: "リリースの種類を指定します。"
+    required: false
+    default: "patch"
+    # options:
+    #  - major 例: 1.0.0 -> 2.0.0
+    #  - minor 例: 1.0.0 -> 1.1.0
+    #  - patch 例: 1.0.0 -> 1.0.1
+runs:
+  using: "node20"
+  main: "dist/index.js"
