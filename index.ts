@@ -64,13 +64,19 @@ async function run() {
       package_json_file_paths,
       release_version,
       release_type,
+      labels,
+      assignees,
+      reviewers,
     } = {
       github_token: core.getInput("github_token", { required: true }),
       dot_version_file_path: core.getInput("dot_version_file_path", { required: false }) || ".version",
       build_gradle_file_paths: core.getMultilineInput("build_gradle_file_paths", { required: false }),
       package_json_file_paths: core.getMultilineInput("package_json_file_paths", { required: false }),
       release_version: core.getInput("release_version", { required: false }),
-      release_type: core.getInput("release_type", { required: false }) || "patch"
+      release_type: core.getInput("release_type", { required: false }) || "patch",
+      labels: core.getInput("labels", { required: false }),
+      assignees: core.getInput("assignees", { required: false }),
+      reviewers: core.getInput("reviewers", { required: false }),
     }
 
     // == バージョンを決める ==
@@ -176,14 +182,53 @@ async function run() {
       ...github.context.repo,
       title: `Release ${version}`,
       head: branchName,
-      base: "main", // 変更する場合は適宜変更
+      base: "main",
       body: `Release ${version}`,
-      reviewers: [
-        github.context.repo.owner,
-      ],
     });
     core.info(`Created pull request: ${pullRequest.html_url}`);
     core.setOutput("pull_request_url", pullRequest.html_url);
+    core.setOutput("pull_request_number", pullRequest.number.toString());
+
+    const prNumber = pullRequest.number;
+
+    // ラベルを追加
+    if (labels) {
+      const labelList = labels.split(",").map(l => l.trim()).filter(l => l);
+      if (labelList.length > 0) {
+        await octokit.rest.issues.addLabels({
+          ...github.context.repo,
+          issue_number: prNumber,
+          labels: labelList,
+        });
+        core.info(`Added labels: ${labelList.join(", ")}`);
+      }
+    }
+
+    // アサインを追加
+    if (assignees) {
+      const assigneeList = assignees.split(",").map(a => a.trim()).filter(a => a);
+      if (assigneeList.length > 0) {
+        await octokit.rest.issues.addAssignees({
+          ...github.context.repo,
+          issue_number: prNumber,
+          assignees: assigneeList,
+        });
+        core.info(`Added assignees: ${assigneeList.join(", ")}`);
+      }
+    }
+
+    // レビュアーを追加
+    if (reviewers) {
+      const reviewerList = reviewers.split(",").map(r => r.trim()).filter(r => r);
+      if (reviewerList.length > 0) {
+        await octokit.rest.pulls.requestReviewers({
+          ...github.context.repo,
+          pull_number: prNumber,
+          reviewers: reviewerList,
+        });
+        core.info(`Added reviewers: ${reviewerList.join(", ")}`);
+      }
+    }
   } catch (error: any) {
     core.error(`Error reading version file: ${error.message}`);
     core.setFailed(error.message);

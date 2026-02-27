@@ -25,6 +25,20 @@ inputs:
     #  - major 例: 1.0.0 -> 2.0.0
     #  - minor 例: 1.0.0 -> 1.1.0
     #  - patch 例: 1.0.0 -> 1.0.1
+  labels:
+    description: "PRに付与するラベル（カンマ区切り）"
+    required: false
+  assignees:
+    description: "PRにアサインするユーザー（カンマ区切り）"
+    required: false
+  reviewers:
+    description: "PRのレビュアーに追加するユーザー（カンマ区切り）"
+    required: false
+outputs:
+  pull_request_url:
+    description: "作成されたPRのURL"
+  pull_request_number:
+    description: "作成されたPRの番号"
 runs:
   using: "node20"
   main: "dist/index.js"
